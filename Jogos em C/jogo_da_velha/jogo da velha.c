@@ -1,68 +1,10 @@
 #include <stdio.h>
-
 #define dim 3
 char tabuleiro[dim][dim]; // matriz tipo char global, podendo ser acessado por todas as funções
-void inicarTabuleiro(){ //zera a matriz do jogo
-    int i,j;
-    for(i=0;i<dim;i++){
-        for(j=0;j<dim;j++){
-            tabuleiro[i][j] = ' ';
-        }
-    }
-}
-void exibir(){ // exibe o tabuleiro do jogo
-    int i,j;
-    printf("\n");
-    for(i=0;i<dim;i++){
-        for(j=0;j<dim;j++){
-            printf(" %c ",tabuleiro[i][j]);
-            if(j<2)printf("|");
-
-        }
-        printf("\n");
-        if(i<2)printf("============\n");
-    }
-}
-char verificaVitoria(){ // verificação de vitoria
-    int i;
-    for(i=0;i<dim;i++){
-        //verifica linhas
-        if(tabuleiro[i][0]==tabuleiro[i][1]&&tabuleiro[i][0]==tabuleiro[i][2]&&tabuleiro[i][0]!=' '){
-            return(tabuleiro[i][0]);
-        }
-        //verifica colunas
-        if(tabuleiro[0][i]==tabuleiro[1][i]&&tabuleiro[0][i]==tabuleiro[2][i]&&tabuleiro[0][i]!=' '){
-            return(tabuleiro[0][i]);
-        }
-    }
-    //verifica diagonais
-    if(tabuleiro[0][0]==tabuleiro[1][1]&&tabuleiro[0][0]==tabuleiro[2][2]&&tabuleiro[0][0]!=' '){
-        return(tabuleiro[0][0]);
-    }
-    if(tabuleiro[0][2]==tabuleiro[1][1]&&tabuleiro[0][2]==tabuleiro[2][0]&&tabuleiro[0][2]!=' '){
-        return(tabuleiro[0][2]);
-    }
-    //se nada for verdade ele só retorna o vazio
-    return ' ';
-}
-int reinicio(){//serve para iniciar e reiniciar o jogo
-    int opc;
-    int reiniciar;
-    printf("\nDeseja jogar?\n1. Sim\n0. Nao\nOpcao: ");
-    scanf("%d",&opc);
-    fflush(stdin);
-    switch(opc){
-        case 1:
-            reiniciar = 1;
-            break;
-        case 0:
-            reiniciar = 0;
-            break;
-        default:
-            printf("\ncomando invalido!\n");
-    }
-    return(reiniciar);
-}
+void inicarTabuleiro(); //zera a matriz do jogo
+void exibir();// exibe o tabuleiro do jogo
+char verificaVitoria();// verificação de vitoria
+int reinicio();//serve para iniciar e reiniciar o jogo
 int main()
 {
     int reiniciar = reinicio();
@@ -107,7 +49,66 @@ int main()
             reiniciar = reinicio();
         }
     };
-
-
     return 0;
+}
+void inicarTabuleiro(){
+    int i,j;
+    for(i=0;i<dim;i++){
+        for(j=0;j<dim;j++){
+            tabuleiro[i][j] = ' ';
+        }
+    }
+}
+void exibir(){
+    int i,j;
+    printf("\n");
+    for(i=0;i<dim;i++){
+        for(j=0;j<dim;j++){
+            printf(" %c ",tabuleiro[i][j]);
+            if(j<2)printf("|");
+
+        }
+        printf("\n");
+        if(i<2)printf("============\n");
+    }
+}
+char verificaVitoria(){
+    int i;
+    for(i=0;i<dim;i++){
+        //verifica linhas
+        if(tabuleiro[i][0]==tabuleiro[i][1]&&tabuleiro[i][0]==tabuleiro[i][2]&&tabuleiro[i][0]!=' '){
+            return(tabuleiro[i][0]);
+        }
+        //verifica colunas
+        if(tabuleiro[0][i]==tabuleiro[1][i]&&tabuleiro[0][i]==tabuleiro[2][i]&&tabuleiro[0][i]!=' '){
+            return(tabuleiro[0][i]);
+        }
+    }
+    //verifica diagonais
+    if(tabuleiro[0][0]==tabuleiro[1][1]&&tabuleiro[0][0]==tabuleiro[2][2]&&tabuleiro[0][0]!=' '){
+        return(tabuleiro[0][0]);
+    }
+    if(tabuleiro[0][2]==tabuleiro[1][1]&&tabuleiro[0][2]==tabuleiro[2][0]&&tabuleiro[0][2]!=' '){
+        return(tabuleiro[0][2]);
+    }
+    //se nada for verdade ele só retorna o vazio
+    return ' ';
+}
+int reinicio(){
+    int opc;
+    int reiniciar;
+    printf("\nDeseja jogar?\n1. Sim\n0. Nao\nOpcao: ");
+    scanf("%d",&opc);
+    fflush(stdin);
+    switch(opc){
+        case 1:
+            reiniciar = 1;
+            break;
+        case 0:
+            reiniciar = 0;
+            break;
+        default:
+            printf("\ncomando invalido!\n");
+    }
+    return(reiniciar);
 }
