@@ -18,6 +18,7 @@ void criarConta(const char *url);
 void loginConta(const char *url);
 void IndexConta(const char *url, const char *nome, float saldo, long int codigo_conta);
 void sacar(const char *url, long int codigo);
+void depositarConta(const char *url, long int codigo);
 
 int main(void) {
     interface();  // Chama a interface principal
@@ -198,6 +199,7 @@ void IndexConta(const char *url, const char *nome, float saldo, long int codigo_
                 break;
             case 3:
                 printf("Deposito\n");
+                depositarConta(url,codigo_conta);
                 // Chame aqui a função de depósito
                 break;
             case 4:
@@ -265,6 +267,43 @@ void sacar(const char *url, long int codigo) {
 
     // Se a conta foi encontrada e atualizada, substitui o arquivo original pelo temporário
     if (contaEncontrada) {
+        remove(url); // ele apaga o arquivo "Dados.txt" que é o antigo;
+        rename("temp.txt", url); //Ele renomeia o arquivo "temp.txt" pelo nome armazenado na variavel url = "Dados.txt", fazendo assim uma atualização dos dados
+    } else {
+        remove("temp.txt");  // Se a conta não foi encontrada, remove o temporário
+        printf("Conta não encontrada.\n");
+    }
+}
+void depositarConta(const char *url,long int codigo){
+    system("cls || clear");
+    float valor;
+    FILE *arquivo = fopen(url,"r");
+    FILE *temp = fopen("temp.txt","w");
+    char linha[300];
+    if (arquivo == NULL || temp == NULL) {
+        printf("\nArquivo nao encontrado\n");
+        return;
+    }
+    conta Conta;
+    printf("Valor do saque: ");
+    scanf("%f", &valor);
+    getchar();  // Para consumir o '\n' deixado pelo scanf
+    int encontrada = 0;
+    while((fgets(linha,sizeof(linha),arquivo))!=NULL){
+        sscanf(linha, "%49s %49s %24s %ld %ld %ld %ld %ld %ld %f", Conta.Onome, Conta.email, Conta.emprego, &Conta.rg, &Conta.cpf,
+               &Conta.telefone, &Conta.senha, &Conta.salario, &Conta.codigo_conta, &Conta.saldo);
+        if(codigo == Conta.codigo_conta){
+            encontrada = 1;  // Marca que a conta foi encontrada
+            Conta.saldo+=valor;
+            printf("\nDepositado!\n");
+        }
+        fprintf(temp, "%s %s %s %ld %ld %ld %ld %ld %ld %.2f\n",
+                Conta.Onome, Conta.email, Conta.emprego, Conta.rg, Conta.cpf,
+                Conta.telefone, Conta.senha, Conta.salario, Conta.codigo_conta, Conta.saldo);
+    }
+    fclose(arquivo);
+    fclose(temp);
+    if(encontrada){
         remove(url); // ele apaga o arquivo "Dados.txt" que é o antigo;
         rename("temp.txt", url); //Ele renomeia o arquivo "temp.txt" pelo nome armazenado na variavel url = "Dados.txt", fazendo assim uma atualização dos dados
     } else {

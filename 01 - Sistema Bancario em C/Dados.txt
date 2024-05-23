@@ -1,3 +1,3 @@
 Nome Email Emprego 2 12923424 127 127 508 12911216 0.00
-juju juju programador 3 3 2 2 2 1606 1000.00
-Pedro Pedro d 3 3 3 3 3 16114 968.00
+juju juju programador 3 3 2 2 2 1606 100.00
+Pedro Pedro d 3 3 3 3 3 16114 978.00
