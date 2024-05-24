@@ -1,5 +1,3 @@
 Nome Email Emprego 2 12923424 127 127 508 12911216 0.00
-juju juju programador 3 3 2 2 2 1606 20.00
-Pedro Pedro d 3 3 3 3 3 16114 1678.00
-Lucas Lucas d 4 4 4 4 4 13705 10000.00
-Eloa eloa Programadora 1410065407 33333333 22222222 1 4000 2748 40000.00
+juju juju@gmail.com programador 3 3 2 2 2 1606 1440.00
+alex alex@gmail.com professor 22212121 444444 333 10 10 24341 1000.00

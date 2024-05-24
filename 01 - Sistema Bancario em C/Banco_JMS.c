@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <windows.h>
+#include <windows.h>// Necessario para usar Sleep()
 #include <time.h>
-  // Necessario para usar Sleep()
 
 // Definição da estrutura de uma conta
 typedef struct {
@@ -18,7 +17,8 @@ typedef struct {
 void Pagina_interface();
 void criarConta(const char *url);
 void loginConta(const char *url);
-void IndexConta(const char *url, const char *nome, float saldo, long int codigo_conta);
+void IndexConta(const char *url, const char *nome,long int codigo_conta);
+void saldo(const char *url, long int codigo);
 void sacar(const char *url, long int codigo);
 void depositarConta(const char *url, long int codigo);
 void transferir(const char *url,long int codigo);
@@ -115,6 +115,7 @@ void criarConta(const char *url) {
                 Conta.telefone, Conta.senha, Conta.salario, Conta.codigo_conta, Conta.saldo);
         fclose(novaConta);  // Fecha o arquivo
     }
+    Pagina_interface();
 }
 
 // Fun��o para fazer login na conta
@@ -157,7 +158,7 @@ void loginConta(const char *url) {
 
         // Se autenticado, chama a fun��o IndexConta, sen�o exibe mensagem de erro
         if (autenticado) {
-            IndexConta(url, Conta.Onome, Conta.saldo, Conta.codigo_conta);
+            IndexConta(url, Conta.Onome, Conta.codigo_conta);
         } else {
             printf("E-mail ou senha incorretos.\n");
         }
@@ -165,7 +166,7 @@ void loginConta(const char *url) {
 }
 
 // Fun��o que exibe o menu principal da conta ap�s login
-void IndexConta(const char *url, const char *nome, float saldo, long int codigo_conta) {
+void IndexConta(const char *url, const char *nome, long int codigo_conta) {
     system("cls || clear");  // Limpa a tela do console
     int opr;
     do {
@@ -174,7 +175,7 @@ void IndexConta(const char *url, const char *nome, float saldo, long int codigo_
         printf("+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+\n");
         printf("+|\t\tBANCO JMS\n");
         printf("+|\n");
-        printf("+|\t1. Saldo\n");
+        printf("+|\t1. Saldo e Informacoes\n");
         printf("+|\t2. Sacar\n");
         printf("+|\t3. Depositar\n");
         printf("+|\t4. Transferir\n");
@@ -187,13 +188,12 @@ void IndexConta(const char *url, const char *nome, float saldo, long int codigo_
         // Chama a fun��o apropriada com base na entrada do usu�rio
         switch (opr) {
             case 1:
-                printf("Saldo atual: R$ %.2f\n", saldo);
-                Sleep(2000);
+                saldo(url, codigo_conta);
+                Sleep(5000);
                 break;
             case 2:
                 sacar(url, codigo_conta);
                 Sleep(800);
-                Pagina_interface();
                 break;
             case 3:
                 depositarConta(url,codigo_conta);
@@ -212,7 +212,29 @@ void IndexConta(const char *url, const char *nome, float saldo, long int codigo_
         }
     } while (opr != 0);  // Continua exibindo o menu at� que o usu�rio escolha sair
 }
+void saldo(const char *url, long int codigo){
+    system("cls || clear");  // Limpa a tela do console
+    char linha[300];
+    FILE *arquivo = fopen(url, "r");  // Abre o arquivo original para leitura
+    if (arquivo == NULL) {
+        printf("\nArquivo nao encontrado\n");
+        return;
+    }
+    conta Conta;
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        // Converte a linha para uma estrutura de conta
+        sscanf(linha, "%49s %49s %24s %ld %ld %ld %ld %ld %ld %f", Conta.Onome, Conta.email, Conta.emprego, &Conta.rg, &Conta.cpf,
+               &Conta.telefone, &Conta.senha, &Conta.salario, &Conta.codigo_conta, &Conta.saldo);
 
+        // Verifica se o c�digo da conta corresponde ao c�digo passado
+        if (codigo == Conta.codigo_conta) {
+            printf("Nome: %s\nEmail: %s\nEmprego: %s\nRG: %ld\nCPF: %ld\nTelefone: %ld\nSenha%ld\nSalario: %ld\nCodigo da Conta: %ld\nSALDO: %.2f\n",
+                Conta.Onome, Conta.email, Conta.emprego, Conta.rg, Conta.cpf,
+                Conta.telefone, Conta.senha, Conta.salario, Conta.codigo_conta, Conta.saldo);
+        }
+    }
+    fclose(arquivo);
+}
 // Fun��o para realizar um saque
 void sacar(const char *url, long int codigo) {
     system("cls || clear");  // Limpa a tela do console
@@ -312,7 +334,6 @@ void transferir(const char *url,long int codigo){
     FILE *temp = fopen("temp.txt","w");
     char linha[300],nome[50];
     long int codigo_transferir,cpf;
-
     if (arquivo == NULL || temp == NULL) {
         printf("\nArquivo nao encontrado\n");
         return;
@@ -334,12 +355,17 @@ void transferir(const char *url,long int codigo){
         sscanf(linha, "%49s %49s %24s %ld %ld %ld %ld %ld %ld %f", Conta.Onome, Conta.email, Conta.emprego, &Conta.rg, &Conta.cpf,
                &Conta.telefone, &Conta.senha, &Conta.salario, &Conta.codigo_conta, &Conta.saldo);
         if(codigo == Conta.codigo_conta){ //primeiro vai ser descontado o valor da conta em que a transferencia esta sendo feita
-            encontrada = 1;  // Marca que a conta foi encontrada
-            Conta.saldo-=valor;
+            if(valor<Conta.saldo){
+                encontrada = 1;  // Marca que a conta foi encontrada
+                Conta.saldo-=valor;
+            }
+            else{
+                printf("\nSaldo insuficiente!!!\n");
+            }
         }
         if(codigo_transferir == Conta.codigo_conta){//Depois eh adicionado o valor transferido na conta de destino
-                encontrada = 1;
-                Conta.saldo+=valor;
+                    encontrada = 1;
+                    Conta.saldo+=valor;
         }
         fprintf(temp, "%s %s %s %ld %ld %ld %ld %ld %ld %.2f\n",
                 Conta.Onome, Conta.email, Conta.emprego, Conta.rg, Conta.cpf,
@@ -354,8 +380,4 @@ void transferir(const char *url,long int codigo){
         remove("temp.txt");  // Se a conta n�o foi encontrada, remove o tempor�rio
         printf("Conta n�o encontrada.\n");
     }
-
-
-
-
 }
