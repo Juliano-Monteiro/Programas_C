@@ -1,3 +1,3 @@
 Nome Email Emprego 2 12923424 127 127 508 12911216 0.00
-juju juju@gmail.com programador 3 3 2 2 2 1606 1440.00
-alex alex@gmail.com professor 22212121 444444 333 10 10 24341 1000.00
+juju juju@gmail.com programador 3 3 2 2 2 1606 10433.00
+alex alex@gmail.com professor 22212121 444444 333 10 10 24341 5.00
